@@ -1,0 +1,11 @@
+COLLISION LAYERS:
+    1 - player
+    2 - enemies
+    3 - world
+
+
+TODO LIST:
+    let Host throw Weapon
+    let Weapon throw Host
+    let Weapon spend NRG to recall Host
+    activate Weapon "hitbox" Area2d when rotating above a speed threshold

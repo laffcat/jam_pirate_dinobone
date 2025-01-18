@@ -1,0 +1,76 @@
+[gd_scene load_steps=11 format=3 uid="uid://dbsnx5shscobj"]
+
+[ext_resource type="Texture2D" uid="uid://3oghm3bf1x7o" path="res://sprites/hud/bar.png" id="1_22iig"]
+[ext_resource type="Shader" path="res://shaders/hud/meter.gdshader" id="2_5c2dl"]
+[ext_resource type="Texture2D" uid="uid://iy06j3yadhar" path="res://sprites/hud/hp_label.png" id="3_d4mnx"]
+[ext_resource type="Texture2D" uid="uid://brxdgddyvqibp" path="res://sprites/hud/nrg_label.png" id="4_058iw"]
+[ext_resource type="PackedScene" uid="uid://bwnpcygt1nmcp" path="res://scenes/player_host.tscn" id="5_k63eg"]
+[ext_resource type="PackedScene" uid="uid://ctoxla2d2ld70" path="res://scenes/player_weapon.tscn" id="6_ka4nm"]
+[ext_resource type="Texture2D" uid="uid://cdscf3r1ar4fv" path="res://sprites/hud/cursor.png" id="7_2ndtv"]
+[ext_resource type="Script" path="res://scripts/cursor.gd" id="8_712jd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n2opu"]
+shader = ExtResource("2_5c2dl")
+shader_parameter/threshold = 0.336
+shader_parameter/color2 = Color(0.56, 0, 0.242667, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bsoqc"]
+shader = ExtResource("2_5c2dl")
+shader_parameter/threshold = 0.336
+shader_parameter/color2 = Color(0.119, 0.34, 0.30685, 1)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="PlayerHost" parent="." node_paths=PackedStringArray("weapon") instance=ExtResource("5_k63eg")]
+position = Vector2(-22, 20)
+weapon = NodePath("../PlayerWeapon")
+
+[node name="PlayerWeapon" parent="." node_paths=PackedStringArray("host") instance=ExtResource("6_ka4nm")]
+position = Vector2(-6, 24)
+host = NodePath("../PlayerHost")
+host_tether_dist = 10.0
+accel = 1.4
+decel = 0.9
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Hud" type="Node2D" parent="Camera2D"]
+
+[node name="HpBar" type="Sprite2D" parent="Camera2D/Hud"]
+position = Vector2(-111, 138)
+texture = ExtResource("1_22iig")
+offset = Vector2(0, 0.5)
+
+[node name="Meter" type="ColorRect" parent="Camera2D/Hud/HpBar"]
+material = SubResource("ShaderMaterial_n2opu")
+offset_left = 72.0
+offset_top = 5.0
+offset_right = 216.0
+offset_bottom = 14.0
+rotation = -3.14159
+color = Color(1, 0.25098, 0.25098, 1)
+
+[node name="HpLabel" type="Sprite2D" parent="Camera2D/Hud"]
+position = Vector2(-135, 114)
+texture = ExtResource("3_d4mnx")
+
+[node name="NrgBar" type="Sprite2D" parent="Camera2D/Hud"]
+position = Vector2(110, 138)
+texture = ExtResource("1_22iig")
+offset = Vector2(0, 0.5)
+
+[node name="Meter" type="ColorRect" parent="Camera2D/Hud/NrgBar"]
+material = SubResource("ShaderMaterial_bsoqc")
+offset_left = -72.0
+offset_top = -4.0
+offset_right = 72.0
+offset_bottom = 5.0
+color = Color(0.262745, 0.74902, 0.415686, 1)
+
+[node name="NrgLabel" type="Sprite2D" parent="Camera2D/Hud"]
+position = Vector2(133, 113)
+texture = ExtResource("4_058iw")
+
+[node name="Cursor" type="Sprite2D" parent="Camera2D"]
+texture = ExtResource("7_2ndtv")
+script = ExtResource("8_712jd")
