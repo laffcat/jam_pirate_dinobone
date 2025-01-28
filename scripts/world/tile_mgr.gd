@@ -11,9 +11,9 @@ enum R { NW, NE, SE, SW, # corners
 	
 const ROT : Array[Array] = [
 	[ 0, T ]			,
-	[ FH, FH|T ]		,
-	[ FH|FV, FH|FV|T ]	,
-	[ FV, FV|T ]		,
+	[ FH, T|FH ]		,
+	[ FH|FV, T|FH|FV ]	,
+	[ FV, T|FV ]		,
 	
 	[ 0, FH ]			,
 	[ T|FH, T|FH|FV ]	,

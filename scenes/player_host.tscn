@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cx4ufsoapa13u" path="res://sprites/humans/test.png" id="2_rcrig"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_cov3p"]
+radius = 6.0
 
 [node name="PlayerHost" type="CharacterBody2D"]
 y_sort_enabled = true
@@ -12,8 +13,10 @@ script = ExtResource("1_us3sb")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 z_as_relative = false
+position = Vector2(0, 6)
 texture = ExtResource("2_rcrig")
-offset = Vector2(1, -5)
+offset = Vector2(1, -11)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 6)
 shape = SubResource("CircleShape2D_cov3p")

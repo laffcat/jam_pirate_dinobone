@@ -30,11 +30,13 @@ func get_tile(neighbors : Array[bool]) -> Array[int]:
 	## returns [atlas X, atlas Y, transform byte]
 	if neighbors == [true, true, true, true]: return [randi()%8, randi()%2, Tiles.trans_random()]
 	var atlas_x := randi()%6
-	var tile_data = EDGE[neighbors]
 	var shpee := 0
-	if len(tile_data) > 2: shpee = randi()%2
-	var shpoo : int = tile_data[1 + shpee]
-	return [ atlas_x, tile_data[0], Tiles.ROT[shpoo].pick_random() ]
+	if len(EDGE[neighbors]) > 2: shpee = randi()%2
+	return [ 
+		atlas_x, 
+		EDGE[neighbors][0], 
+		Tiles.ROT [EDGE[neighbors][1 + shpee]] [randi()%2] 
+	]
 
 
 

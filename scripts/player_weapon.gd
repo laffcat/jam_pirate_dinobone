@@ -7,6 +7,7 @@ var hosted := true
 
 @export var speed_max_hosted := 160.0
 @export var speed_max_floating := 110.0
+@export var speed_projectile := 320.0
 @export var accel := .5
 @export var decel := .4
 var rot_speed := 5.0
@@ -26,26 +27,44 @@ var side := S.R
 func side_flip(): side *= -1; $SpriteRoot/Bone.scale.y = side
 
 
-#func _process(delta: float) -> void:
-	#z_index = global_position.y
+var state : String:
+	set(new_state): 
+		state = new_state
+		match new_state:
+			"free": sprite_reset()
+			
+			
+
+func _ready():
+	state = "free"
+
+func _process(delta: float) -> void:
+	match state:
+		"projectile":
+			$SpriteRoot.rotate(deg_to_rad(-920 * side * delta))
 
 func _physics_process(delta: float) -> void:
-	
-	melee(delta)
-	
+	match state:
+		
+		"free":
+			melee(delta)
+			throw_self()
 			
-	var input_dir := Input.get_vector("left", "right", "up", "down").normalized()
-	if input_dir:
-		var speed := speed_max_hosted if hosted else speed_max_floating
-		vel = lerp(vel, input_dir * speed, accel * delta)
-	else:
-		vel = lerp(vel, Vector2.ZERO, decel * delta)
-	
-	if !is_meleeing: 
-		var rot_new = global_position.direction_to($"../Camera2D/Cursor".global_position).angle()
-		rotation = lerp_angle(rotation, rot_new, rot_speed * delta)
-	
+			var input_dir := Input.get_vector("left", "right", "up", "down").normalized()
+			if input_dir:
+				var speed := speed_max_hosted if hosted else speed_max_floating
+				vel = lerp(vel, input_dir * speed, accel * delta)
+			else:
+				vel = lerp(vel, Vector2.ZERO, decel * delta)
+				
+			if !is_meleeing: 
+				var rot_new = global_position.direction_to($"../Camera2D/Cursor".global_position).angle()
+				rotation = lerp_angle(rotation, rot_new, rot_speed * delta)
+			
 	velocity = vel + vel_add
+			
+			
+			
 	move_and_slide()
 	if vel_add != Vector2.ZERO:
 		#print(str(vel_add))
@@ -65,6 +84,10 @@ func _physics_process(delta: float) -> void:
 		host.move_and_slide()
 	
 		
+func sprite_reset():
+	side_flip()
+	$SpriteRoot/Bone.frame = 0
+	$SpriteRoot.rotation = deg_to_rad(120 * side)
 
 func melee(delta : float):
 	if clk_melee: clk_melee = Global.s2z(clk_melee, delta); return
@@ -74,11 +97,11 @@ func melee(delta : float):
 	is_meleeing = true
 	vel_add = scooch_melee * Vector2(1.0, 0).rotated(rotation)
 	velocity += vel_add * .4
-	$Hitbox.monitoring = true
+	$HitboxMelee.monitoring = true
 	$SpriteRoot.rotation = deg_to_rad(-70 * side)
 	$SpriteRoot/Bone.frame = 1
 	await get_tree().create_timer(.1).timeout
-	$Hitbox.monitoring = false
+	$HitboxMelee.monitoring = false
 	$SpriteRoot.rotation = deg_to_rad(-100 * side)
 	$SpriteRoot/Bone.frame = 0
 	await get_tree().create_timer(.03).timeout
@@ -90,7 +113,15 @@ func melee(delta : float):
 	await get_tree().create_timer(clk_melee * .5).timeout
 	side_flip()
 	
+func throw_self():
+	if clk_melee: return
+	if !Input.is_action_pressed("mouse1"): return
+	if is_meleeing: return
 	
+	state = "projectile"
+	hosted = false
+	$SpriteRoot/Bone.frame = 2
+	vel = speed_projectile * global_position.direction_to($"../Camera2D/Cursor".global_position)
 
 
 
