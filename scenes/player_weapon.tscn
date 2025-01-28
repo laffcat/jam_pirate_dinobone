@@ -1,47 +1,58 @@
-[gd_scene load_steps=6 format=3 uid="uid://ctoxla2d2ld70"]
+[gd_scene load_steps=7 format=3 uid="uid://ctoxla2d2ld70"]
 
 [ext_resource type="Script" path="res://scripts/player_weapon.gd" id="1_ojdhu"]
+[ext_resource type="Texture2D" uid="uid://cao7akksn31ua" path="res://sprites/bone.png" id="2_33cky"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g7qyf"]
-radius = 10.198
+radius = 23.0217
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e4t4l"]
-radius = 8.06226
+radius = 25.0799
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xinxs"]
-radius = 6.08276
+radius = 13.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kl837"]
 radius = 4.0
 
 [node name="PlayerWeapon" type="CharacterBody2D"]
+y_sort_enabled = true
 collision_mask = 6
 script = ExtResource("1_ojdhu")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = 27.0
-offset_top = -3.0
-offset_right = 33.0
-offset_bottom = 29.0
-rotation = 1.5708
-color = Color(0.802647, 0.881302, 0.862664, 1)
+[node name="SpriteRoot" type="Node2D" parent="."]
+rotation = 2.0944
+
+[node name="Bone" type="Sprite2D" parent="SpriteRoot"]
+z_as_relative = false
+texture = ExtResource("2_33cky")
+offset = Vector2(5, 6)
+hframes = 3
 
 [node name="Hitbox" type="Area2D" parent="."]
 rotation = 1.5708
 collision_layer = 0
 collision_mask = 0
+monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -20)
+position = Vector2(-1.90735e-06, -21)
 shape = SubResource("CircleShape2D_g7qyf")
 debug_color = Color(0.954422, 2.40654e-06, 0.548506, 0.42)
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -11)
+position = Vector2(16, -9.00006)
+shape = SubResource("CircleShape2D_e4t4l")
+debug_color = Color(0.954422, 2.40654e-06, 0.548506, 0.42)
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(-16, -8.99995)
 shape = SubResource("CircleShape2D_e4t4l")
 debug_color = Color(0.954422, 2.40654e-06, 0.548506, 0.42)
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(4.76837e-05, 13)
 shape = SubResource("CircleShape2D_xinxs")
 debug_color = Color(0.954422, 2.40654e-06, 0.548506, 0.42)
 
