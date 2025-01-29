@@ -1,7 +1,6 @@
-class_name Shpee
-extends Node2D
+class_name Sphath
+extends Path2D
 
-# SHPEE!!!!!!!!!!!!!!!!!!!!
 
 @export var mult := 1.0
 @export var dirt := false

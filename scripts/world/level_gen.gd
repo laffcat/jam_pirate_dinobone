@@ -34,20 +34,21 @@ func generate(layout_wall: TileMapLayer, layout_path: TileMapLayer):
 		layout_wall.set_cell(Vector2i(x, y), 0, Vector2i.ZERO)
 	# then, clear tiles based on proximity to paths, offset by noise
 	var markers : Array[Node2D] = []; for each in get_children(): markers.append(each)
+	var tiles := layout_wall.get_used_cells()
 	for mark in markers:
-		for tile in layout_wall.get_used_cells():
+		for tile in tiles:
 			var dist := 0.0
 			if mark is Path2D:
 				dist = (tile * 16).distance_to( mark.curve.sample_baked( mark.curve.get_closest_offset(tile * 16) ) )
 			if mark is Shpee:
-				dist = (tile * 16).distance_to(mark.global_position) * mark.mult
+				dist = (tile * 16).distance_to(mark.global_position)
 			var uv_x := tile.x * .05 * uv_mult_x
 			var uv_y := tile.y * .05 * uv_mult_y + (uv_x * noise_drift)
 			var sample := t.get_pixel(int(w * uv_x) % w, int(h * uv_y) % h).r
 			var final := dist * .1 + (sample - .5) * noise_mult
-			if final < threshold:
+			if final * mark.mult <= threshold:
 				layout_wall.set_cell(tile, 0, Vector2i(-1, -1))
-				if mark is Path2D and final < threshold * path_threshold:
+				if (mark.dirt == true) and (final <= threshold * path_threshold * mark.dirt_mult):
 					layout_path.set_cell(tile, 0, Vector2i.ZERO)
 			#print(str(tile) + ", " + str(dist) + ", " + str(final))
 			

@@ -18,12 +18,12 @@ func get_tile(neighbors : Array[bool]) -> Array[int]:
 		# midtiles
 		[true, true, true, true]: return [ randi()%10, randi_range(4, 8), Tiles.FH * randi()%2 ]
 		# top edges
-		[false, false, true, true]: return [ randi()%8, 0, Tiles.FH * randi()%2 ]
+		[false, false, true, true]: return [ randi()%8, randi()%2, Tiles.FH * randi()%2 ]
 		# bottom edges
 		[true, true, false, false]: return [ randi()%8, 2, Tiles.FH * randi()%2 ]
 		# side edges
-		[false, true, true, false]: return [ randi()%8, 1, Tiles.T | (Tiles.FV * randi()%2) ]
-		[true, false, false, true]: return [ randi()%8, 1, Tiles.T | Tiles.FH | (Tiles.FV * randi()%2) ]
+		[false, true, true, false]: return [ randi()%8, randi()%2, Tiles.T | (Tiles.FV * randi()%2) ]
+		[true, false, false, true]: return [ randi()%8, randi()%2, Tiles.T | Tiles.FH | (Tiles.FV * randi()%2) ]
 		
 		# top outer corners
 		[false, false, true, false]: return [ randi()%2, 3, Tiles.T * randi()%2 ]

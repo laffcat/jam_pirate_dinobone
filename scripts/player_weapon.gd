@@ -1,12 +1,22 @@
 class_name PlayerWeapon
 extends CharacterBody2D
 
+@export var hp_max : int
+@export var nrg_max : int
+
 @export var host : PlayerHost
 @export var host_tether_dist := 60.0
-var hosted := true
+
+signal host_start
+signal host_end
+var hosted := true:
+	set(b):
+		hosted = b
+		if b: host_start.emit()
+		else: host_end.emit()
 
 @export var speed_max_hosted := 160.0
-@export var speed_max_floating := 110.0
+@export var speed_max_floating := 90.0
 @export var speed_projectile := 290.0
 @export var accel := .5
 @export var decel := .4
@@ -36,14 +46,9 @@ var state : String:
 	
 func _ready():
 	state = "free"
+	$Hurtbox.monitoring = true
 	#$Hurtbox.body_entered.connect(hurt)
-		
-func hurt(body: Node2D):
-	print("ding!")
-	match state:
-		"projectile":
-			if body is TileMapLayer:
-				state = "free"
+
 
 func _process(delta: float) -> void:
 	match state:
@@ -67,7 +72,10 @@ func _physics_process(delta: float) -> void:
 			if !is_meleeing: 
 				var rot_new = global_position.direction_to($"../Camera2D/Cursor".global_position).angle()
 				rotation = lerp_angle(rotation, rot_new, rot_speed * delta)
-			
+		
+		"projectile":
+			melee(delta)
+		
 	velocity = vel + vel_add
 			
 			
@@ -78,7 +86,7 @@ func _physics_process(delta: float) -> void:
 		var speed_new := Global.s2z(vel_add.length(), vel_add_decay * delta)
 		vel_add = vel_add.limit_length(speed_new)
 		
-	if hosted:
+	if hosted: ## TODO: set up caveman animations here!
 		var host_distance : float = min(host_tether_dist, global_position.distance_to(host.global_position))
 		var host_direction : Vector2 = global_position.direction_to(host.global_position)
 		var host_target : Vector2 = global_position + host_distance * host_direction
@@ -103,7 +111,11 @@ func melee(delta : float):
 	if !Input.is_action_pressed("space"): return
 	if is_meleeing: return
 	
+	if state != "free": 
+		state = "free"
+		vel *= .4
 	is_meleeing = true
+	rotation = global_position.direction_to($"../Camera2D/Cursor".global_position).angle()
 	vel_add = scooch_melee * Vector2(1.0, 0).rotated(rotation)
 	velocity += vel_add * .4
 	$HitboxMelee.monitoring = true
@@ -131,11 +143,30 @@ func throw_self():
 	hosted = false
 	$SpriteRoot/Bone.frame = 2
 	vel = speed_projectile * global_position.direction_to($"../Camera2D/Cursor".global_position)
-	global_position += vel * .04
+	global_position += vel * .03
+	clk_melee = .3
 	
 
 
 
+		
+func hurt(body: Node2D):
+	#print("ding!")
+	match state:
+		"projectile":
+			if body is TileMapLayer:
+				blowback(.2)
+				state = "free"
+		"free":
+			if !hosted and (body is PlayerHost):
+				hosted = true
+
+
+
+func blowback(amt: float):
+	vel = vel.rotated(deg_to_rad(randi_range(160, 200)))
+	vel *= amt
+	vel_add = vel
 
 
 
