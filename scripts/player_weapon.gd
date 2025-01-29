@@ -7,7 +7,7 @@ var hosted := true
 
 @export var speed_max_hosted := 160.0
 @export var speed_max_floating := 110.0
-@export var speed_projectile := 320.0
+@export var speed_projectile := 290.0
 @export var accel := .5
 @export var decel := .4
 var rot_speed := 5.0
@@ -26,17 +26,24 @@ enum S { L = -1, R = 1 }
 var side := S.R
 func side_flip(): side *= -1; $SpriteRoot/Bone.scale.y = side
 
-
 var state : String:
 	set(new_state): 
 		state = new_state
 		match new_state:
 			"free": sprite_reset()
 			
-			
-
+	
+	
 func _ready():
 	state = "free"
+	#$Hurtbox.body_entered.connect(hurt)
+		
+func hurt(body: Node2D):
+	print("ding!")
+	match state:
+		"projectile":
+			if body is TileMapLayer:
+				state = "free"
 
 func _process(delta: float) -> void:
 	match state:
@@ -80,6 +87,8 @@ func _physics_process(delta: float) -> void:
 			host.velocity = host_vel
 			var hvx_sign : int = sign(host_vel.x)
 			if hvx_sign != 0: host.sprite.scale.x = hvx_sign
+		else:
+			host.velocity = Vector2.ZERO
 		
 		host.move_and_slide()
 	
@@ -122,7 +131,8 @@ func throw_self():
 	hosted = false
 	$SpriteRoot/Bone.frame = 2
 	vel = speed_projectile * global_position.direction_to($"../Camera2D/Cursor".global_position)
-
+	global_position += vel * .04
+	
 
 
 

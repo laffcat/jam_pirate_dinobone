@@ -1,10 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://ctoxla2d2ld70"]
+[gd_scene load_steps=9 format=3 uid="uid://ctoxla2d2ld70"]
 
 [ext_resource type="Script" path="res://scripts/player_weapon.gd" id="1_ojdhu"]
 [ext_resource type="Texture2D" uid="uid://cao7akksn31ua" path="res://sprites/bone.png" id="2_33cky"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_kl837"]
-radius = 5.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_k4s46"]
+radius = 26.3059
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g7qyf"]
 radius = 23.0217
@@ -15,8 +15,11 @@ radius = 25.0799
 [sub_resource type="CircleShape2D" id="CircleShape2D_xinxs"]
 radius = 13.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_k4s46"]
-radius = 26.3059
+[sub_resource type="CircleShape2D" id="CircleShape2D_rqx6h"]
+radius = 11.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kl837"]
+radius = 5.0
 
 [node name="PlayerWeapon" type="CharacterBody2D"]
 y_sort_enabled = true
@@ -26,10 +29,6 @@ wall_min_slide_angle = 0.872665
 platform_on_leave = 2
 script = ExtResource("1_ojdhu")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-rotation = 1.5708
-shape = SubResource("CircleShape2D_kl837")
-
 [node name="SpriteRoot" type="Node2D" parent="."]
 rotation = 2.0944
 
@@ -38,7 +37,16 @@ z_as_relative = false
 texture = ExtResource("2_33cky")
 offset = Vector2(5, 6)
 hframes = 3
-frame = 2
+
+[node name="HitboxProjectile" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxProjectile"]
+shape = SubResource("CircleShape2D_k4s46")
+debug_color = Color(0.609109, 0.362607, 1, 0.42)
 
 [node name="HitboxMelee" type="Area2D" parent="."]
 rotation = 1.5708
@@ -67,12 +75,18 @@ position = Vector2(4.76837e-05, 13)
 shape = SubResource("CircleShape2D_xinxs")
 debug_color = Color(0.954422, 2.40654e-06, 0.548506, 0.42)
 
-[node name="HitboxProjectile" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 2
-monitoring = false
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 6
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxProjectile"]
-shape = SubResource("CircleShape2D_k4s46")
-debug_color = Color(0.609109, 0.362607, 1, 0.42)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_rqx6h")
+debug_color = Color(0.915618, 0.840933, 1.15514e-06, 0.419608)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CircleShape2D_kl837")
+debug_color = Color(0.425478, 0.259137, 0.190666, 0.643137)
+
+[connection signal="body_entered" from="Hurtbox" to="." method="hurt"]
