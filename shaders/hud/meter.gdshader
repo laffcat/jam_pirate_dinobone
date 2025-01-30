@@ -7,7 +7,7 @@ float gtz(float input) { return max(0, sign(input)); }
 // returns 1.0 if input > 0, else 0.0
 
 void fragment() {
-	COLOR.rgb = mix( COLOR.rgb, color2, gtz(threshold - UV.x) );
+	COLOR.rgb = mix( COLOR.rgb, color2, gtz(UV.x - threshold) );
 }
 
 

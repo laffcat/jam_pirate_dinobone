@@ -1,8 +1,24 @@
 class_name PlayerWeapon
 extends CharacterBody2D
 
-@export var hp_max : int
-@export var nrg_max : int
+
+
+@export var hp_max := 100
+@onready var meter_hp: ColorRect = $"../Camera2D/Hud/HpBar/Meter"
+var hp : int:
+	set(i):
+		hp = max(0, min(hp_max, i))
+		var ratio := float(hp) / float(hp_max)
+		meter_hp.material.set_shader_parameter("threshold", hp / ratio)
+@export var nrg_max := 100.0
+@onready var meter_nrg: ColorRect = $"../Camera2D/Hud/NrgBar/Meter"
+var nrg : float:
+	set(i):
+		nrg = max(0, min(nrg_max, i))
+		var ratio := nrg / nrg_max
+		meter_nrg.material.set_shader_parameter("threshold", ratio)
+		print(str(i) + ", " + str(ratio))
+
 
 @export var host : PlayerHost
 @export var host_tether_dist := 60.0
@@ -47,6 +63,8 @@ var state : String:
 func _ready():
 	state = "free"
 	$Hurtbox.monitoring = true
+	hp = hp_max
+	nrg = nrg_max
 	#$Hurtbox.body_entered.connect(hurt)
 
 
@@ -61,6 +79,8 @@ func _physics_process(delta: float) -> void:
 		"free":
 			melee(delta)
 			throw_self()
+			throw_host()
+			gravitate_host(delta)
 			
 			var input_dir := Input.get_vector("left", "right", "up", "down").normalized()
 			if input_dir:
@@ -75,12 +95,15 @@ func _physics_process(delta: float) -> void:
 		
 		"projectile":
 			melee(delta)
+			if is_on_wall() or is_on_floor() or is_on_ceiling():
+				blowback(.2)
+				state = "free"
+				clk_melee = .3
 		
 	velocity = vel + vel_add
 			
-			
-			
 	move_and_slide()
+	
 	if vel_add != Vector2.ZERO:
 		#print(str(vel_add))
 		var speed_new := Global.s2z(vel_add.length(), vel_add_decay * delta)
@@ -102,6 +125,10 @@ func _physics_process(delta: float) -> void:
 		
 		host.move_and_slide()
 		if velocity.length() < vel.length(): vel = velocity
+		
+		nrg += 15 * delta
+	
+	
 	
 		
 func sprite_reset():
@@ -114,6 +141,7 @@ func melee(delta : float):
 	if !Input.is_action_pressed("space"): return
 	if is_meleeing: return
 	
+	if !hosted: nrg -= 6
 	if state != "free": 
 		state = "free"
 		vel *= .4
@@ -142,26 +170,53 @@ func throw_self():
 	if !Input.is_action_pressed("mouse1"): return
 	if is_meleeing: return
 	
+	
 	state = "projectile"
-	if hosted: hosted = false
+	if hosted: 
+		hosted = false
+	else:
+		nrg -= 10
 	$SpriteRoot/Bone.frame = 2
 	vel = speed_projectile * global_position.direction_to($"../Camera2D/Cursor".global_position)
-	global_position += vel * .03
+	vel_add += vel * .03
 	clk_melee = .3
 	
+func throw_host():
+	if clk_melee: return
+	if !Input.is_action_pressed("mouse2"): return
+	if is_meleeing: return
+	if !hosted: return
+	if host.anim_locked: return
+	
+	nrg -= 20
+	host.state = "roll"
+	hosted = false
+	host.vel = host.speed_projectile * host.global_position.direction_to($"../Camera2D/Cursor".global_position)
+	var hvx : int = sign(host.vel.x)
+	if hvx: host.sprite.scale.x = hvx
 
-
+func gravitate_host(delta : float):
+	host.gravitated = false
+	if !Input.is_action_pressed("mouse2"): return
+	if hosted: return
+	if host.state == "roll": return
+	if host.state == "stun": return
+	
+	nrg -= 10 * delta
+	host.gravitated = true
+	host.vel += host.global_position.direction_to(global_position) * host.gravitate_force * delta
 
 		
 func hurt(body: Node2D):
 	#print("ding!")
 	match state:
 		"projectile":
-			if body is TileMapLayer:
-				blowback(.2)
-				state = "free"
+			pass
+			#if body is TileMapLayer:
+				#blowback(.2)
+				#state = "free"
 		"free":
-			if !hosted and (body is PlayerHost):
+			if !hosted and (body is PlayerHost) and body.state != "roll" and body.state != "stun":
 				hosted = true
 
 

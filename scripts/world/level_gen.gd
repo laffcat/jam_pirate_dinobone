@@ -17,7 +17,9 @@ extends Node
 @export var uv_mult_y := 1.0
 @export var noise_mult := 1.0
 
-func _ready(): randomize()
+func _ready(): 
+	randomize()
+	#gen_test = true
 
 func generate(layout_wall: TileMapLayer, layout_path: TileMapLayer, bg: TileMapLayer):
 	layout_wall.clear()

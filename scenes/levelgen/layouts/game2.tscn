@@ -1,0 +1,100 @@
+[gd_scene load_steps=7 format=3 uid="uid://dkya061httmfh"]
+
+[ext_resource type="Script" path="res://scripts/world/level_gen.gd" id="1_wyvhp"]
+[ext_resource type="Script" path="res://scripts/shpath.gd" id="2_8f5p4"]
+[ext_resource type="PackedScene" uid="uid://dyrn3swjqlg28" path="res://scenes/levelgen/shpee.tscn" id="3_y2gnt"]
+
+[sub_resource type="Curve2D" id="Curve2D_c1o3h"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -16, 96, -202.761, -1.12229, 202.761, 1.12229, 344, 208, -36.16, 155.888, 36.16, -155.888, 680, 160, -117.423, -16.7399, 117.423, 16.7399, 976, 80, -149.067, -36.0965, 149.067, 36.0965, 1232, 224, -123, 11, 123, -11, 1520, 88, -62, -32, 62, 32, 1648, 264, -49, 102, 49, -102, 1880, 152)
+}
+point_count = 8
+
+[sub_resource type="Curve2D" id="Curve2D_c260b"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 1016, 88, 0, 0, 0, 0, 1184, 32, 0, 0, 0, 0, 1312, 56, 0, 0, 0, 0, 1384, 176)
+}
+point_count = 4
+
+[sub_resource type="Curve2D" id="Curve2D_lpp7g"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 296, 208, 0, 0, 0, 0, 352, 88, 0, 0, 0, 0, 480, 40, 0, 0, 0, 0, 640, 208)
+}
+point_count = 4
+
+[node name="LevelGen" type="Node"]
+script = ExtResource("1_wyvhp")
+length = 120
+noise_drift = 0.1
+threshold = 7.0
+path_threshold = 0.2
+noise_mult = 5.0
+
+[node name="Path2D" type="Path2D" parent="."]
+curve = SubResource("Curve2D_c1o3h")
+script = ExtResource("2_8f5p4")
+dirt = true
+
+[node name="Sphath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_c260b")
+script = ExtResource("2_8f5p4")
+mult = 2.5
+
+[node name="Sphath2" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lpp7g")
+script = ExtResource("2_8f5p4")
+mult = 3.0
+
+[node name="Shpee" parent="." instance=ExtResource("3_y2gnt")]
+
+[node name="Shpee2" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(1768, 72)
+mult = 0.9
+dirt_mult = 3.0
+
+[node name="Shpee5" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(1528, 88)
+mult = 0.9
+dirt_mult = 3.0
+
+[node name="Shpee7" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(1032, 120)
+mult = 0.5
+
+[node name="Shpee6" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(-24, 216)
+
+[node name="Shpee3" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(1800, 160)
+mult = 0.9
+dirt_mult = 3.0
+
+[node name="Shpee4" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(1664, 96)
+mult = 1.7
+dirt = false
+dirt_mult = 3.0
+
+[node name="Shpee11" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(1712, 72)
+mult = 1.7
+dirt = false
+dirt_mult = 3.0
+
+[node name="Shpee8" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(624, 136)
+mult = 0.9
+dirt = false
+dirt_mult = 3.0
+
+[node name="Shpee10" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(552, 176)
+mult = 0.8
+dirt = false
+dirt_mult = 3.0
+
+[node name="Shpee9" parent="." instance=ExtResource("3_y2gnt")]
+position = Vector2(776, 104)
+mult = 1.1
+dirt = false
+dirt_mult = 3.0

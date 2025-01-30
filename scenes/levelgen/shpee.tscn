@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyrn3swjqlg28"]
+
+[ext_resource type="Script" path="res://scripts/shpee.gd" id="1_d0lac"]
+
+[node name="Shpee" type="Node2D"]
+position = Vector2(1840, 96)
+script = ExtResource("1_d0lac")
+mult = 0.6
+dirt = true
+dirt_mult = 5.0
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(0.862083, 4.33177e-07, 0.456161, 1)
