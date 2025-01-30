@@ -12,8 +12,8 @@ signal host_end
 var hosted := true:
 	set(b):
 		hosted = b
-		if b: host_start.emit()
-		else: host_end.emit()
+		if b: host.possession()
+		else: host.exorcism()
 
 @export var speed_max_hosted := 160.0
 @export var speed_max_floating := 90.0
@@ -90,15 +90,18 @@ func _physics_process(delta: float) -> void:
 		var host_distance : float = min(host_tether_dist, global_position.distance_to(host.global_position))
 		var host_direction : Vector2 = global_position.direction_to(host.global_position)
 		var host_target : Vector2 = global_position + host_distance * host_direction
-		var host_vel := host.global_position.distance_to(host_target) * host.global_position.direction_to(host_target) * (1.0 / delta)
+		var host_vel := host.global_position.distance_to(host_target) * host.global_position.direction_to(host_target)
 		if host_vel:
-			host.velocity = host_vel
+			host.anim("held_move")
+			host.velocity = host_vel * (1.0 / delta)
 			var hvx_sign : int = sign(host_vel.x)
 			if hvx_sign != 0: host.sprite.scale.x = hvx_sign
 		else:
-			host.velocity = Vector2.ZERO
+			host.anim("held_idle")
+			host.velocity = host.global_position.distance_to(global_position) * host.global_position.direction_to(global_position)
 		
 		host.move_and_slide()
+		if velocity.length() < vel.length(): vel = velocity
 	
 		
 func sprite_reset():
@@ -140,7 +143,7 @@ func throw_self():
 	if is_meleeing: return
 	
 	state = "projectile"
-	hosted = false
+	if hosted: hosted = false
 	$SpriteRoot/Bone.frame = 2
 	vel = speed_projectile * global_position.direction_to($"../Camera2D/Cursor".global_position)
 	global_position += vel * .03
