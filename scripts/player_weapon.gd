@@ -283,6 +283,7 @@ func victory():
 	await get_tree().create_timer(4.0).timeout
 	if hp > 0 and nrg > 0:
 		host.cleanup()
+		Global.nme_extra += 1
 		get_tree().reload_current_scene()
 
 func failsafe():

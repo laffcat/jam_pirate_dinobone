@@ -7,6 +7,7 @@ func _ready() -> void:
 	
 	Global.bonez = []
 	Global.bonetype_pool = []
+	Global.nme_extra = 0
 	
 	match randi()%3:
 		0:
