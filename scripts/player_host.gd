@@ -11,7 +11,19 @@ var vel := Vector2.ZERO
 var bounce_timer_x := 0.0
 var bounce_timer_y := 0.0
 
-var state := ""
+var state := "":
+	set(s):
+		if s != "roll": 
+			$HitboxRoll.set_deferred("monitoring", false)
+			invuln = false
+		else:
+			$HitboxRoll.set_deferred("monitoring", true)
+			invuln = true
+		if s != "stun":
+			sprite.material.set_shader_parameter("colors", base_colors)
+			
+		
+		state = s
 var state_time := 0.0
 
 var possessed := true
@@ -20,9 +32,17 @@ var anim_locked := 0.0
 @export var gravitate_force := 90.0
 var gravitated := false
 
+var invuln = false
+
+@export var owie_colors : Array[Color]
+var base_colors : Array
 #
 #func _process(delta: float) -> void:
 	#z_index = global_position.y
+
+func _ready():
+	Global.player_host = self
+	base_colors = sprite.material.get_shader_parameter("colors") as Array
 
 func _process(delta: float):
 	if anim_locked: 
@@ -68,7 +88,9 @@ func _physics_process(delta: float) -> void:
 					vel *= -.6
 					state = "stun"
 					state_time = 1.4
+					$HitboxRoll.set_deferred("monitoring", false)
 			"stun":
+				$HitboxRoll.set_deferred("monitoring", false)
 				anim("stun")
 				vel = velocity.lerp(Vector2.ZERO, decel * delta)
 				
@@ -83,10 +105,12 @@ func possession():
 
 func exorcism():
 	possessed = false
-	if state != "roll":
+	if state != "roll" and invuln == false:
 		anim_stun(.75)
 		state = "idle"
 		state_time = randf_range(2.5, 4)
+	else:
+		$HitboxRoll.set_deferred("monitoring", true)
 	
 
 func anim(a : String):
@@ -96,3 +120,58 @@ func anim_stun(len : float):
 	anim_locked += len
 	sprite.animation = "twitch"
 	
+
+
+func _on_hurtbox_area_entered(area: Area2D) -> void:
+	var shpee := area.get_parent()
+	if shpee is EnemyHuman:
+		match area.name:
+			"DetectionRadius":
+				shpee.curious = true
+			"Hitbox":
+				shpee.state = "swing"
+				owie(shpee)
+
+
+
+
+func owie(assailant: Node2D):
+	if invuln: return
+	
+	velocity = Global.player_dir(assailant, 80)
+	invuln = true
+	weapon.hosted = false
+	weapon.hp -= 15
+	# this color shit is so jank LMAO
+	sprite.material.set_shader_parameter("colors", owie_colors)
+	state = "stun"
+	state_time = 2.0
+	await get_tree().create_timer(.6).timeout
+	sprite.material.set_shader_parameter("colors", base_colors)
+	await get_tree().create_timer(.4).timeout
+	invuln = false
+	
+
+
+
+func _on_hitbox_roll_body_entered(body: Node2D) -> void:
+	if body is EnemyHuman:
+		body.hp -= 1
+		body.velocity = Global.player_dir(body, -300)
+		body.state = "hurt"
+		await get_tree().process_frame
+		body.state_time = 1.4
+
+
+
+
+
+
+
+
+
+
+
+
+
+##

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8vtbiy1jdwlk"]
+
+[ext_resource type="Texture2D" uid="uid://cte4p4x3k1iq0" path="res://sprites/enemy/shock.png" id="1_k8nfj"]
+[ext_resource type="Script" path="res://scripts/shock.gd" id="2_ry8ca"]
+
+[node name="Sprite2D" type="Sprite2D"]
+z_index = 1
+texture = ExtResource("1_k8nfj")
+offset = Vector2(0, -6)
+hframes = 2
+script = ExtResource("2_ry8ca")

@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://3trwnjb6wq4k"]
+[gd_scene load_steps=9 format=3 uid="uid://3trwnjb6wq4k"]
 
 [ext_resource type="Script" path="res://scripts/world/level_gen.gd" id="1_pvhk4"]
 [ext_resource type="Script" path="res://scripts/shpath.gd" id="2_c4bo7"]
 [ext_resource type="PackedScene" uid="uid://dyrn3swjqlg28" path="res://scenes/levelgen/shpee.tscn" id="3_cm6rm"]
+[ext_resource type="PackedScene" uid="uid://d3igsk18h3qc" path="res://scenes/enemy_spawner.tscn" id="4_l31dv"]
+[ext_resource type="PackedScene" uid="uid://dwyfnfaajb58" path="res://scenes/bonez.tscn" id="5_7dhem"]
 
 [sub_resource type="Curve2D" id="Curve2D_c1o3h"]
 _data = {
@@ -24,7 +26,7 @@ point_count = 4
 
 [node name="LevelGen" type="Node"]
 script = ExtResource("1_pvhk4")
-length = 120
+length = 150
 noise_drift = 0.1
 threshold = 7.0
 path_threshold = 0.2
@@ -78,3 +80,24 @@ position = Vector2(864, 128)
 mult = 1.1
 dirt = false
 dirt_mult = 3.0
+
+[node name="EnemySpawner" parent="." instance=ExtResource("4_l31dv")]
+position = Vector2(816, 136)
+amt_base = 2
+
+[node name="EnemySpawner2" parent="." instance=ExtResource("4_l31dv")]
+position = Vector2(1296, 200)
+
+[node name="EnemySpawner3" parent="." instance=ExtResource("4_l31dv")]
+position = Vector2(1784, 160)
+amt_base = 5
+
+[node name="Node2D" parent="." instance=ExtResource("5_7dhem")]
+position = Vector2(832, 80)
+
+[node name="Node2D2" parent="." instance=ExtResource("5_7dhem")]
+position = Vector2(1304, 240)
+
+[node name="Node2D3" parent="." instance=ExtResource("5_7dhem")]
+position = Vector2(1824, 112)
+final = true

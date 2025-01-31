@@ -1,4 +1,5 @@
 @tool
+class_name LevelGenerator
 extends Node
 
 
@@ -7,7 +8,15 @@ extends Node
 	set(b): if b:
 		generate($"../TilesWallLayout", $"../TilesPathLayout", $"../TilesGrass")
 		
+@export var clearem := false: 
+	set(b): if b: 
+		$"../TilesWallDisplay".clear()
+		$"../TilesPathDisplay".clear()
+		$"../TilesGrass".clear()
+		$"../TilesPathLayout".clear()
+		$"../TilesWallLayout".clear()
 		
+
 #@export var texture : Texture2D
 @export var length := 60
 @export var noise_drift := .05
@@ -17,9 +26,9 @@ extends Node
 @export var uv_mult_y := 1.0
 @export var noise_mult := 1.0
 
-func _ready(): 
-	randomize()
-	#gen_test = true
+#func _ready(): 
+	#randomize()
+	#generate($"../TilesWallLayout", $"../TilesPathLayout", $"../TilesGrass")
 
 func generate(layout_wall: TileMapLayer, layout_path: TileMapLayer, bg: TileMapLayer):
 	layout_wall.clear()
@@ -49,6 +58,8 @@ func generate(layout_wall: TileMapLayer, layout_path: TileMapLayer, bg: TileMapL
 	var tiles := layout_wall.get_used_cells()
 	var first_pass := true
 	for mark in markers:
+		if mark is EnemySpawner: continue
+		if mark is Bonez: continue
 		for tile in tiles:
 			var dist := 0.0
 			if mark is Path2D:
@@ -66,8 +77,19 @@ func generate(layout_wall: TileMapLayer, layout_path: TileMapLayer, bg: TileMapL
 			if first_pass: bg.generate(tile, final)
 			#print(str(tile) + ", " + str(dist) + ", " + str(final))
 		first_pass = false
-				
 	
+	## spawn enemies
+	for mark in markers:
+		if mark is not EnemySpawner: continue
+		mark.populate_spawnpoints(layout_wall)
+		
+	
+	
+	## done with markers - clear em out
+	if !Engine.is_editor_hint(): 
+		for mark in markers: 
+			if mark is EnemySpawner: mark.visible = false
+			elif mark is not Bonez : mark.call_deferred("queue_free")
 	
 	## seal in edges
 	# sides

@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://bwnpcygt1nmcp"]
+[gd_scene load_steps=36 format=3 uid="uid://bwnpcygt1nmcp"]
 
 [ext_resource type="Script" path="res://scripts/player_host.gd" id="1_us3sb"]
 [ext_resource type="Texture2D" uid="uid://cx4ufsoapa13u" path="res://sprites/humans/test.png" id="2_rcrig"]
@@ -244,10 +244,15 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_uhjkn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_463p8"]
+radius = 22.0
+
 [node name="PlayerHost" type="CharacterBody2D"]
 y_sort_enabled = true
 collision_layer = 32
-collision_mask = 6
+collision_mask = 4
 script = ExtResource("1_us3sb")
 decel = 20.0
 
@@ -265,6 +270,30 @@ shape = SubResource("CircleShape2D_cov3p")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = ExtResource("3_af6xs")
 sprite_frames = SubResource("SpriteFrames_j37ss")
-animation = &"free_move"
+animation = &"roll"
 autoplay = "held_idle"
+frame_progress = 0.660525
 offset = Vector2(0, -5)
+
+[node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(0, 1)
+collision_layer = 0
+collision_mask = 32840
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_uhjkn")
+debug_color = Color(0.692839, 0.479824, 0.357039, 0.42)
+
+[node name="HitboxRoll" type="Area2D" parent="."]
+position = Vector2(0, -5)
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxRoll"]
+shape = SubResource("CircleShape2D_463p8")
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="body_entered" from="HitboxRoll" to="." method="_on_hitbox_roll_body_entered"]

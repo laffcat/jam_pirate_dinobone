@@ -6,6 +6,13 @@ extends Camera2D
 func player_xpos_suv() -> float: return ( $"../PlayerWeapon".global_position.x - position.x ) / Global.SCR.x
 # returns player's relative xpos as if it were a screen UV - 0.0 to 1.0 
 
+
+func _ready():
+	await get_tree().create_timer(.3).timeout
+	var t := get_tree().create_tween()
+	t.tween_property($ColorRect3, "position:y", 480, .6)
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	var follow := player_xpos_suv()
@@ -22,3 +29,7 @@ func _process(delta: float) -> void:
 			float( max( 0, position.x + (follow - tracking_threshold) * Global.SCR.x ) ),
 			tracking_speed * delta
 		) )
+
+
+func trigger_spawner(area: Area2D) -> void:
+	area.get_parent().spawn()
