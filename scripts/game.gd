@@ -3,6 +3,7 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	Global.nmes_left = 0
 	Global.main = self
 	randomize()
 	$TilesPathLayout.visible = 0

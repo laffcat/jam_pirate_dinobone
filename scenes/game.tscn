@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://dbsnx5shscobj"]
+[gd_scene load_steps=40 format=4 uid="uid://dbsnx5shscobj"]
 
 [ext_resource type="Texture2D" uid="uid://3oghm3bf1x7o" path="res://sprites/hud/bar.png" id="1_22iig"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_preox"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/world/tilemaps/tiles_path_display.gd" id="3_0g0vn"]
 [ext_resource type="AudioStream" uid="uid://dxr385x1l5b8" path="res://sounds/mus/gameplay_music_new.wav" id="3_02vpn"]
 [ext_resource type="Texture2D" uid="uid://iy06j3yadhar" path="res://sprites/hud/hp_label.png" id="3_d4mnx"]
+[ext_resource type="AudioStream" uid="uid://e8o5fe5r6v4b" path="res://sounds/mus/mus_battle_130bpm.wav" id="4_2vv7u"]
 [ext_resource type="Texture2D" uid="uid://brxdgddyvqibp" path="res://sprites/hud/nrg_label.png" id="4_058iw"]
 [ext_resource type="PackedScene" uid="uid://bwnpcygt1nmcp" path="res://scenes/player_host.tscn" id="5_k63eg"]
 [ext_resource type="Texture2D" uid="uid://dfyinbvc8cpce" path="res://sprites/world/env1/tiles_wall.png" id="5_xg6kf"]
@@ -21,6 +22,8 @@
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="12_j1qlh"]
 [ext_resource type="Texture2D" uid="uid://ddts3lmyos15k" path="res://sprites/bonez.png" id="18_rvwll"]
 [ext_resource type="Script" path="res://scenes/bone_list.gd" id="19_sw1ti"]
+[ext_resource type="Texture2D" uid="uid://dn74ee5qqlk0o" path="res://sprites/menu/game_over.png" id="20_iluap"]
+[ext_resource type="Script" path="res://scenes/game_over.gd" id="21_twsjl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0ung3"]
 texture = ExtResource("2_0o4yt")
@@ -332,6 +335,10 @@ stream = ExtResource("3_02vpn")
 volume_db = -5.0
 autoplay = true
 
+[node name="Music2" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource("4_2vv7u")
+volume_db = -5.0
+
 [node name="TilesPathLayout" type="TileMapLayer" parent="."]
 modulate = Color(0.75, 0.555, 0.737, 0.533333)
 z_index = -2
@@ -449,12 +456,17 @@ tile_map_data = PackedByteArray("AAAAAAAAAAAGAAAAAAABAAAAAAACAAAAAAACAAAAAAABAAA
 tile_set = SubResource("TileSet_j4610")
 script = ExtResource("19_sw1ti")
 
+[node name="GameOver" type="Sprite2D" parent="Camera2D/Hud"]
+visible = false
+position = Vector2(-8, 0)
+texture = ExtResource("20_iluap")
+script = ExtResource("21_twsjl")
+
 [node name="Cursor" type="Sprite2D" parent="Camera2D"]
 texture = ExtResource("7_2ndtv")
 script = ExtResource("8_712jd")
 
 [node name="ColorRect3" type="ColorRect" parent="Camera2D"]
-visible = false
 offset_right = 480.0
 offset_bottom = 320.0
 color = Color(0.165707, 0.14041, 0.180156, 1)

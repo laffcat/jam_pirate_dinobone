@@ -6,6 +6,11 @@ var main : Node2D
 var player_host : PlayerHost
 var player_wep : PlayerWeapon
 var nme_extra := 0
+signal nmes_cleared
+var nmes_left := 0:
+	set(i):
+		nmes_left = i
+		if i <= 0: nmes_cleared.emit()
 
 const SCR = Vector2(480, 320)
 const HALF_SCR = Vector2(240, 160)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=3 uid="uid://bjr4bqulwlju6"]
+[gd_scene load_steps=67 format=3 uid="uid://bjr4bqulwlju6"]
 
 [ext_resource type="Script" path="res://scenes/custscene_start.gd" id="1_6ejfv"]
 [ext_resource type="Script" path="res://scripts/world/level_gen.gd" id="1_8j0ul"]
@@ -15,6 +15,15 @@
 [ext_resource type="Shader" path="res://shaders/palette.gdshader" id="14_5bnvh"]
 [ext_resource type="Texture2D" uid="uid://cao7akksn31ua" path="res://sprites/bone.png" id="14_vcop6"]
 [ext_resource type="AudioStream" uid="uid://m33brge0c7qj" path="res://sounds/sfx/sfx__backtobone.wav" id="15_fx4ir"]
+[ext_resource type="AudioStream" uid="uid://cipcoy0iiaj8t" path="res://sounds/sfx/misc/sfx_voice_speak_1.wav" id="16_6hxfd"]
+[ext_resource type="AudioStream" uid="uid://btao5d4et8f8w" path="res://sounds/sfx/misc/sfx_voice_speak_2.wav" id="17_g862n"]
+[ext_resource type="AudioStream" uid="uid://b570g07rkli1o" path="res://sounds/sfx/misc/sfx_voice_speak_4.wav" id="18_0gf3q"]
+[ext_resource type="AudioStream" uid="uid://b0c82owyecg05" path="res://sounds/sfx/misc/sfx_voice_speak_5.wav" id="19_scaj3"]
+[ext_resource type="AudioStream" uid="uid://b6j5awohl73k2" path="res://sounds/sfx/misc/sfx_voice_speak_6.wav" id="20_3nny7"]
+[ext_resource type="AudioStream" uid="uid://bjjo0k3sw1ofg" path="res://sounds/sfx/misc/sfx_voice_speak_7.wav" id="21_12wgu"]
+[ext_resource type="AudioStream" uid="uid://cf6obtq68qv4e" path="res://sounds/sfx/misc/sfx_voice_speak_8.wav" id="22_vs74s"]
+[ext_resource type="AudioStream" uid="uid://dy242s8n8o3tk" path="res://sounds/sfx/misc/sfx_voice_speak_9.wav" id="23_btktw"]
+[ext_resource type="AudioStream" uid="uid://ds30h5xwrjxj2" path="res://sounds/sfx/misc/sfx_voice_speak_10.wav" id="24_m03vx"]
 
 [sub_resource type="Curve2D" id="Curve2D_dh2dr"]
 _data = {
@@ -536,6 +545,18 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_id104"]
+streams_count = 9
+stream_0/stream = ExtResource("16_6hxfd")
+stream_1/stream = ExtResource("17_g862n")
+stream_2/stream = ExtResource("18_0gf3q")
+stream_3/stream = ExtResource("19_scaj3")
+stream_4/stream = ExtResource("20_3nny7")
+stream_5/stream = ExtResource("21_12wgu")
+stream_6/stream = ExtResource("22_vs74s")
+stream_7/stream = ExtResource("23_btktw")
+stream_8/stream = ExtResource("24_m03vx")
+
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_6ejfv")
 
@@ -617,6 +638,10 @@ sprite_frames = SubResource("SpriteFrames_ogkkh")
 animation = &"free_move"
 autoplay = "held_idle"
 offset = Vector2(0, -5)
+
+[node name="Speak" type="AudioStreamPlayer2D" parent="caveman"]
+stream = SubResource("AudioStreamRandomizer_id104")
+volume_db = 1.0
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 480.0

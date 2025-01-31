@@ -1,6 +1,8 @@
 class_name PlayerWeapon
 extends CharacterBody2D
 
+signal dead
+
 var already_hit : Array[CharacterBody2D] = []
 
 @export var hp_max := 150
@@ -10,6 +12,9 @@ var hp : int:
 		hp = max(0, min(hp_max, i))
 		var ratio := float(hp) / float(hp_max)
 		meter_hp.material.set_shader_parameter("threshold", ratio)
+		if hp == 0:
+			host.gameover()
+		
 @export var nrg_max := 150.0
 @onready var meter_nrg: ColorRect = $"../Camera2D/Hud/NrgBar/Meter"
 var nrg : float:
@@ -17,7 +22,10 @@ var nrg : float:
 		nrg = max(0, min(nrg_max, i))
 		var ratio := nrg / nrg_max
 		meter_nrg.material.set_shader_parameter("threshold", ratio)
-		#print(str(i) + ", " + str(ratio))
+		if nrg == 0:
+			state = "free"
+			host.gameover()
+			die()
 
 
 @export var host : PlayerHost
@@ -54,7 +62,9 @@ var is_meleeing := false
 
 enum S { L = -1, R = 1 }
 var side := S.R
-func side_flip(): side *= -1; $SpriteRoot/Bone.scale.y = side
+func side_flip(): 
+	if nrg == 0: return
+	side *= -1; $SpriteRoot/Bone.scale.y = side
 
 var state : String:
 	set(new_state): 
@@ -84,24 +94,29 @@ func _process(delta: float) -> void:
 	match state:
 		"projectile":
 			$SpriteRoot.rotate(deg_to_rad(-920 * side * delta))
+	if $"../Audio/Music1".playing and global_position.x > 1550:
+		$"../Audio/Music1".stop()
+		$"../Audio/Music2".play()
 
 func _physics_process(delta: float) -> void:
 	match state:
 		
 		"free":
-			melee(delta)
-			throw_self()
-			throw_host()
-			gravitate_host(delta)
+			if nrg > 0:
+				melee(delta)
+				throw_self()
+				throw_host()
+				gravitate_host(delta)
+			
 			
 			var input_dir := Input.get_vector("left", "right", "up", "down").normalized()
-			if input_dir:
+			if input_dir and nrg > 0:
 				var speed := speed_max_hosted if hosted else speed_max_floating
 				vel = lerp(vel, input_dir * speed, accel * delta)
 			else:
 				vel = lerp(vel, Vector2.ZERO, decel * delta)
 				
-			if !is_meleeing: 
+			if !is_meleeing and nrg > 0: 
 				var rot_new = global_position.direction_to($"../Camera2D/Cursor".global_position).angle()
 				rotation = lerp_angle(rotation, rot_new, rot_speed * delta)
 		
@@ -143,7 +158,7 @@ func _physics_process(delta: float) -> void:
 			
 			nrg += 45 * delta
 	else:
-		nrg -= 4 * delta
+		nrg -= (4 if hp > 0 else 50) * delta
 	
 	
 	
@@ -224,7 +239,7 @@ func gravitate_host(delta : float):
 	if host.state == "stun": return
 	
 	if !$Audio2D/Wawawa.playing: $Audio2D/Wawawa.play()
-	nrg -= 10 * delta
+	nrg -= 11 * delta
 	host.gravitated = true
 	host.vel += host.global_position.direction_to(global_position) * host.gravitate_force * delta
 
@@ -238,33 +253,58 @@ func hurt(body: Node2D):
 				#blowback(.2)
 				#state = "free"
 		"free":
-			if !hosted and (body is PlayerHost) and body.state != "roll" and body.state != "stun":
+			if !hosted and (body is PlayerHost) and body.state != "roll" and body.state != "stun" \
+			and hp > 0 and nrg > 0:
 				hosted = true
+
+func check_host():
+	for body in $Hurtbox.get_overlapping_bodies():
+		match state:
+			"free":
+				if !hosted and (body is PlayerHost) and body.state != "roll" \
+				and hp > 0 and nrg > 0:
+					hosted = true
+		
 
 func hurt_area(area: Area2D) -> void:
 	var shpee := area.get_parent()
 	if shpee is EnemyHuman:
 		shpee.aggro = true
-	if shpee is Bonez:
+	if (shpee is Bonez) and hosted:
 		Global.bonez.append(shpee.sprite.frame)
-		Global.bonez_updated.emit()
+		Global.bonez_updated.emit() 
+		if shpee.final: victory()
 		shpee.call_deferred("queue_free")
+		
+func victory():
+	failsafe()
+	if Global.nmes_left > 0: 
+		await Global.nmes_cleared
+	await get_tree().create_timer(4.0).timeout
+	if hp > 0 and nrg > 0:
+		host.cleanup()
+		get_tree().reload_current_scene()
 
+func failsafe():
+	await get_tree().create_timer(9.0).timeout
+	Global.nmes_cleared.emit()
 
 
 func _on_hitbox_melee_body_entered(body: Node2D) -> void:
 	if body is EnemyHuman and !body.invuln:
+		$Audio2D/Hit.play()
 		print("melee hit")
 		body.hp -= 1
-		body.velocity = 180 * host.global_position.direction_to($"../Camera2D/Cursor".global_position)
+		body.vel = 180 * global_position.direction_to($"../Camera2D/Cursor".global_position)
 		body.state = "hurt"
 		
 func _on_hitbox_projectile_body_entered(body: Node2D) -> void:
 	if body is EnemyHuman and !body.invuln: #and !(body in already_hit):
+		$Audio2D/Hit.play()
 		print("proj hit")
 		body.hp -= 1
 		$HitboxProjectile.set_deferred("monitoring", false)
-		body.velocity = Global.player_dir(body, -120, true)
+		body.vel = Global.player_dir(body, -120, true)
 		body.state = "hurt"
 		state = "free"
 		blowback(.1)
@@ -280,7 +320,10 @@ func blowback(amt: float):
 
 
 
-
+func die():
+	dead.emit()
+	$MeshInstance2D.visible = false
+	$SpriteRoot/Bone.modulate = Color.WEB_GRAY
 
 
 

@@ -6,6 +6,8 @@ extends Node2D
 signal done
 
 @export var amt_base := 3
+@export var final := false
+
 
 var spawnpoints : Array[Vector2] = []
 
@@ -16,7 +18,7 @@ func populate_spawnpoints(tilemap: TileMapLayer):
 	var i := 0
 	while i < amt_base + Global.nme_extra:
 		var test : Vector2 = round(
-			( global_position + randi_range(16, 60) * Vector2.UP.rotated(deg_to_rad((randi() % 360))) ) \
+			( global_position + randi_range(5, 20) * Vector2.UP.rotated(deg_to_rad((randi() % 360))) ) \
 			/ 16 
 			) * 16 + Vector2(8, 8)
 		if check_tile(test, tilemap):
@@ -30,7 +32,13 @@ func populate_spawnpoints(tilemap: TileMapLayer):
 func spawn():
 	for each in spawnpoints:
 		var nme = enemy.instantiate()
-		Global.main.add_child(nme)
+		Global.main.call_deferred("add_child", nme)
+		await get_tree().process_frame
 		nme.global_position = each
+		if final:
+			print("nmes_left + 1")
+			Global.nmes_left += 1
+			print(str(Global.nmes_left))
+			nme.final = true
 	await get_tree().process_frame
 	call_deferred("queue_free")

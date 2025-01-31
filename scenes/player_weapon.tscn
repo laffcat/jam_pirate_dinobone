@@ -1,12 +1,18 @@
-[gd_scene load_steps=15 format=3 uid="uid://ctoxla2d2ld70"]
+[gd_scene load_steps=22 format=3 uid="uid://ctoxla2d2ld70"]
 
 [ext_resource type="Script" path="res://scripts/player_weapon.gd" id="1_ojdhu"]
 [ext_resource type="Texture2D" uid="uid://cao7akksn31ua" path="res://sprites/bone.png" id="2_33cky"]
 [ext_resource type="AudioStream" uid="uid://3ilexvt1v2i0" path="res://sounds/sfx/player/sfx_whoosh_1.wav" id="2_jdf6v"]
+[ext_resource type="ArrayMesh" uid="uid://belymessq0uvy" path="res://sprites/mesh_circle.obj" id="2_p0riy"]
 [ext_resource type="AudioStream" uid="uid://b4crcoh0lokkr" path="res://sounds/sfx/player/sfx_whoosh_2.wav" id="3_yl6dx"]
 [ext_resource type="AudioStream" uid="uid://da8vkx8d1odlh" path="res://sounds/sfx/player/sfx_whoosh_3.wav" id="4_1tcqw"]
 [ext_resource type="AudioStream" uid="uid://dpae0e3st33cd" path="res://sounds/sfx/player/wawawa.wav" id="5_i7aq7"]
 [ext_resource type="AudioStream" uid="uid://m33brge0c7qj" path="res://sounds/sfx/sfx__backtobone.wav" id="6_qs3gr"]
+[ext_resource type="AudioStream" uid="uid://oxsovvku1iqj" path="res://sounds/sfx/misc/sfx__hit_1.wav" id="8_jttjj"]
+[ext_resource type="AudioStream" uid="uid://cshe0cldqkuup" path="res://sounds/sfx/misc/sfx__hit_2.wav" id="9_661fk"]
+[ext_resource type="AudioStream" uid="uid://8t0bb1vxh3vv" path="res://sounds/sfx/misc/sfx__hit_3.wav" id="10_r1ydf"]
+[ext_resource type="AudioStream" uid="uid://iqs7fglnejcb" path="res://sounds/sfx/misc/sfx__hit_4.wav" id="11_2knrf"]
+[ext_resource type="AudioStream" uid="uid://b8bdp0e7ej1bx" path="res://sounds/sfx/misc/sfx__hit_5.wav" id="12_keq11"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_7x6v7"]
 random_pitch = 1.02
@@ -14,6 +20,15 @@ streams_count = 3
 stream_0/stream = ExtResource("2_jdf6v")
 stream_1/stream = ExtResource("3_yl6dx")
 stream_2/stream = ExtResource("4_1tcqw")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_d6fw5"]
+random_pitch = 1.02
+streams_count = 5
+stream_0/stream = ExtResource("8_jttjj")
+stream_1/stream = ExtResource("9_661fk")
+stream_2/stream = ExtResource("10_r1ydf")
+stream_3/stream = ExtResource("11_2knrf")
+stream_4/stream = ExtResource("12_keq11")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k4s46"]
 radius = 26.3059
@@ -41,6 +56,11 @@ wall_min_slide_angle = 0.872665
 platform_on_leave = 2
 script = ExtResource("1_ojdhu")
 
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+modulate = Color(0.866667, 0.670588, 0.921569, 1)
+scale = Vector2(8.285, 8.285)
+mesh = ExtResource("2_p0riy")
+
 [node name="Audio2D" type="Node2D" parent="."]
 
 [node name="Woosh1" type="AudioStreamPlayer2D" parent="Audio2D"]
@@ -56,6 +76,9 @@ pitch_scale = 0.92
 stream = ExtResource("6_qs3gr")
 volume_db = 1.2
 
+[node name="Hit" type="AudioStreamPlayer2D" parent="Audio2D"]
+stream = SubResource("AudioStreamRandomizer_d6fw5")
+
 [node name="SpriteRoot" type="Node2D" parent="."]
 rotation = 2.0944
 
@@ -66,6 +89,7 @@ offset = Vector2(5, 6)
 hframes = 3
 
 [node name="HitboxProjectile" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 2
 monitoring = false
@@ -76,6 +100,7 @@ shape = SubResource("CircleShape2D_k4s46")
 debug_color = Color(0.609109, 0.362607, 1, 0.42)
 
 [node name="HitboxMelee" type="Area2D" parent="."]
+visible = false
 rotation = 1.5708
 collision_layer = 0
 collision_mask = 2
@@ -103,6 +128,7 @@ shape = SubResource("CircleShape2D_xinxs")
 debug_color = Color(0.954422, 2.40654e-06, 0.548506, 0.42)
 
 [node name="Hurtbox" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 32866
 monitorable = false

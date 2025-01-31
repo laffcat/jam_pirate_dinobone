@@ -6,9 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://d3igsk18h3qc" path="res://scenes/enemy_spawner.tscn" id="4_e6o6m"]
 [ext_resource type="PackedScene" uid="uid://dwyfnfaajb58" path="res://scenes/bonez.tscn" id="5_4lkfe"]
 
-[sub_resource type="Curve2D" id="Curve2D_c1o3h"]
+[sub_resource type="Curve2D" id="Curve2D_k77y4"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, -16, 96, -202.761, -1.12229, 202.761, 1.12229, 344, 208, -36.16, 155.888, 36.16, -155.888, 680, 160, -117.423, -16.7399, 117.423, 16.7399, 976, 80, -149.067, -36.0965, 149.067, 36.0965, 1232, 224, -123, 11, 123, -11, 1520, 88, -62, -32, 62, 32, 1648, 264, -49, 102, 49, -102, 1880, 152)
+"points": PackedVector2Array(0, 0, 0, 0, -16, 96, -202.761, -1.12229, 202.761, 1.12229, 344, 208, -130.16, 81.888, 130.16, -81.888, 672, 168, -117.423, -16.7399, 117.423, 16.7399, 976, 80, -149.067, -36.0965, 149.067, 36.0965, 1200, 136, -113, -7, 113, 7, 1432, 168, -62, -32, 62, 32, 1672, 176, -43, 46, 43, -46, 1800, 96)
 }
 point_count = 8
 
@@ -33,7 +33,7 @@ path_threshold = 0.2
 noise_mult = 5.0
 
 [node name="Path2D" type="Path2D" parent="."]
-curve = SubResource("Curve2D_c1o3h")
+curve = SubResource("Curve2D_k77y4")
 script = ExtResource("2_8f5p4")
 dirt = true
 
@@ -116,6 +116,7 @@ position = Vector2(1376, 184)
 [node name="EnemySpawner3" parent="." instance=ExtResource("4_e6o6m")]
 position = Vector2(1744, 128)
 amt_base = 5
+final = true
 
 [node name="Node2D" parent="." instance=ExtResource("5_4lkfe")]
 position = Vector2(784, 120)

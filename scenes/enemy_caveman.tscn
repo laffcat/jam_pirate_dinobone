@@ -1,7 +1,52 @@
-[gd_scene load_steps=27 format=3 uid="uid://c57t2muc0opsb"]
+[gd_scene load_steps=48 format=3 uid="uid://c57t2muc0opsb"]
 
 [ext_resource type="Script" path="res://scenes/enemy_caveman.gd" id="1_56dlc"]
 [ext_resource type="Texture2D" uid="uid://deucrofflm655" path="res://sprites/enemy/enemy_caveman.png" id="1_sl5q7"]
+[ext_resource type="AudioStream" uid="uid://cipcoy0iiaj8t" path="res://sounds/sfx/misc/sfx_voice_speak_1.wav" id="2_oiohg"]
+[ext_resource type="AudioStream" uid="uid://btao5d4et8f8w" path="res://sounds/sfx/misc/sfx_voice_speak_2.wav" id="3_1yk7s"]
+[ext_resource type="AudioStream" uid="uid://b570g07rkli1o" path="res://sounds/sfx/misc/sfx_voice_speak_4.wav" id="4_mnp7v"]
+[ext_resource type="AudioStream" uid="uid://b0c82owyecg05" path="res://sounds/sfx/misc/sfx_voice_speak_5.wav" id="5_qpvs5"]
+[ext_resource type="AudioStream" uid="uid://b6j5awohl73k2" path="res://sounds/sfx/misc/sfx_voice_speak_6.wav" id="6_ii3d5"]
+[ext_resource type="AudioStream" uid="uid://bjjo0k3sw1ofg" path="res://sounds/sfx/misc/sfx_voice_speak_7.wav" id="7_vs8it"]
+[ext_resource type="AudioStream" uid="uid://cf6obtq68qv4e" path="res://sounds/sfx/misc/sfx_voice_speak_8.wav" id="8_vsfra"]
+[ext_resource type="AudioStream" uid="uid://dy242s8n8o3tk" path="res://sounds/sfx/misc/sfx_voice_speak_9.wav" id="9_pmquw"]
+[ext_resource type="AudioStream" uid="uid://ds30h5xwrjxj2" path="res://sounds/sfx/misc/sfx_voice_speak_10.wav" id="10_2l8be"]
+[ext_resource type="AudioStream" uid="uid://2imq0ee6rcr4" path="res://sounds/sfx/misc/sfx_voice_hit_1.wav" id="11_53cx4"]
+[ext_resource type="AudioStream" uid="uid://d7mx2sjfd1c4" path="res://sounds/sfx/misc/sfx_ui_voice_confirm_3.wav" id="11_wfcm8"]
+[ext_resource type="AudioStream" uid="uid://bnl8u4toof4ir" path="res://sounds/sfx/misc/sfx_voice_hit_2.wav" id="12_qa23h"]
+[ext_resource type="AudioStream" uid="uid://w182nhksfgtc" path="res://sounds/sfx/misc/sfx_voice_hit_4.wav" id="13_jm184"]
+[ext_resource type="AudioStream" uid="uid://cxw2y0xobfb6d" path="res://sounds/sfx/misc/sfx_voice_hit_8.wav" id="16_5igal"]
+[ext_resource type="AudioStream" uid="uid://buojnlxkxsh5w" path="res://sounds/sfx/misc/sfx_voice_hit_9.wav" id="17_ghiq3"]
+[ext_resource type="AudioStream" uid="uid://dgipe5kyvgnqm" path="res://sounds/sfx/misc/sfx_voice_defeat_1.wav" id="18_c0j4r"]
+[ext_resource type="AudioStream" uid="uid://dgmhc1tiwsuck" path="res://sounds/sfx/misc/sfx_voice_defeat_2.wav" id="19_r7hrk"]
+[ext_resource type="AudioStream" uid="uid://dy7nv6wqovwk" path="res://sounds/sfx/misc/sfx_voice_defeat_3.wav" id="20_ycd2u"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_58d6p"]
+streams_count = 10
+stream_0/stream = ExtResource("2_oiohg")
+stream_1/stream = ExtResource("3_1yk7s")
+stream_2/stream = ExtResource("4_mnp7v")
+stream_3/stream = ExtResource("5_qpvs5")
+stream_4/stream = ExtResource("6_ii3d5")
+stream_5/stream = ExtResource("7_vs8it")
+stream_6/stream = ExtResource("8_vsfra")
+stream_7/stream = ExtResource("9_pmquw")
+stream_8/stream = ExtResource("10_2l8be")
+stream_9/stream = ExtResource("11_wfcm8")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_70eai"]
+streams_count = 5
+stream_0/stream = ExtResource("11_53cx4")
+stream_1/stream = ExtResource("12_qa23h")
+stream_2/stream = ExtResource("13_jm184")
+stream_3/stream = ExtResource("16_5igal")
+stream_4/stream = ExtResource("17_ghiq3")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_1s1n8"]
+streams_count = 3
+stream_0/stream = ExtResource("18_c0j4r")
+stream_1/stream = ExtResource("19_r7hrk")
+stream_2/stream = ExtResource("20_ycd2u")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m0idq"]
 atlas = ExtResource("1_sl5q7")
@@ -192,8 +237,22 @@ radius = 114.158
 
 [node name="Enemy" type="CharacterBody2D"]
 collision_layer = 2
-collision_mask = 6
+collision_mask = 38
 script = ExtResource("1_56dlc")
+
+[node name="Audio" type="Node2D" parent="."]
+
+[node name="Speak" type="AudioStreamPlayer2D" parent="Audio"]
+stream = SubResource("AudioStreamRandomizer_58d6p")
+volume_db = 1.0
+
+[node name="Hit" type="AudioStreamPlayer2D" parent="Audio"]
+stream = SubResource("AudioStreamRandomizer_70eai")
+volume_db = 2.5
+
+[node name="Die" type="AudioStreamPlayer2D" parent="Audio"]
+stream = SubResource("AudioStreamRandomizer_1s1n8")
+volume_db = 1.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_7wv1h")

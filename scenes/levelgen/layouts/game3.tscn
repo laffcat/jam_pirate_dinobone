@@ -91,9 +91,10 @@ position = Vector2(1296, 200)
 [node name="EnemySpawner3" parent="." instance=ExtResource("4_l31dv")]
 position = Vector2(1784, 160)
 amt_base = 5
+final = true
 
 [node name="Node2D" parent="." instance=ExtResource("5_7dhem")]
-position = Vector2(832, 80)
+position = Vector2(848, 120)
 
 [node name="Node2D2" parent="." instance=ExtResource("5_7dhem")]
 position = Vector2(1304, 240)

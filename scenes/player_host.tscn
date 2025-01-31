@@ -1,9 +1,35 @@
-[gd_scene load_steps=36 format=3 uid="uid://bwnpcygt1nmcp"]
+[gd_scene load_steps=46 format=3 uid="uid://bwnpcygt1nmcp"]
 
 [ext_resource type="Script" path="res://scripts/player_host.gd" id="1_us3sb"]
+[ext_resource type="AudioStream" uid="uid://oxsovvku1iqj" path="res://sounds/sfx/misc/sfx__hit_1.wav" id="2_kidpm"]
 [ext_resource type="Texture2D" uid="uid://cx4ufsoapa13u" path="res://sprites/humans/test.png" id="2_rcrig"]
 [ext_resource type="Material" uid="uid://cgiuw8ohjg6yo" path="res://shaders/palette.tres" id="3_af6xs"]
+[ext_resource type="AudioStream" uid="uid://cshe0cldqkuup" path="res://sounds/sfx/misc/sfx__hit_2.wav" id="3_wojqc"]
+[ext_resource type="AudioStream" uid="uid://8t0bb1vxh3vv" path="res://sounds/sfx/misc/sfx__hit_3.wav" id="4_8ejr2"]
 [ext_resource type="Texture2D" uid="uid://dnsbohtt0k7ud" path="res://sprites/humans/player_host.png" id="4_rlw32"]
+[ext_resource type="AudioStream" uid="uid://iqs7fglnejcb" path="res://sounds/sfx/misc/sfx__hit_4.wav" id="5_lhnfx"]
+[ext_resource type="AudioStream" uid="uid://b8bdp0e7ej1bx" path="res://sounds/sfx/misc/sfx__hit_5.wav" id="6_71oo5"]
+[ext_resource type="AudioStream" uid="uid://dy6r5t8xdkuky" path="res://sounds/sfx/player/sfx__rolling_2.wav" id="7_eqfdp"]
+[ext_resource type="AudioStream" uid="uid://bkb3pft0nv2ks" path="res://sounds/sfx/player/sfx__knocking.wav" id="8_ne2oi"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_6uw7y"]
+random_pitch = 1.05
+streams_count = 5
+stream_0/stream = ExtResource("2_kidpm")
+stream_1/stream = ExtResource("3_wojqc")
+stream_2/stream = ExtResource("4_8ejr2")
+stream_3/stream = ExtResource("5_lhnfx")
+stream_4/stream = ExtResource("6_71oo5")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_aue6t"]
+random_pitch = 1.05
+streams_count = 1
+stream_0/stream = ExtResource("7_eqfdp")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_3fxn7"]
+random_pitch = 1.05
+streams_count = 1
+stream_0/stream = ExtResource("8_ne2oi")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_cov3p"]
 radius = 4.0
@@ -252,9 +278,19 @@ radius = 22.0
 [node name="PlayerHost" type="CharacterBody2D"]
 y_sort_enabled = true
 collision_layer = 32
-collision_mask = 4
+collision_mask = 6
 script = ExtResource("1_us3sb")
 decel = 20.0
+
+[node name="Hit" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_6uw7y")
+pitch_scale = 1.35
+
+[node name="Roll" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_aue6t")
+
+[node name="Knock" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_3fxn7")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 visible = false
@@ -272,7 +308,7 @@ material = ExtResource("3_af6xs")
 sprite_frames = SubResource("SpriteFrames_j37ss")
 animation = &"roll"
 autoplay = "held_idle"
-frame_progress = 0.660525
+frame_progress = 0.856141
 offset = Vector2(0, -5)
 
 [node name="Hurtbox" type="Area2D" parent="."]
